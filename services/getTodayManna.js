@@ -49,11 +49,10 @@ export async function getTodayManna() {
   const date_selector = '#dawn_area > div.active > div.condate';
   await page.waitForSelector(date_selector);
 
-  const date = await page.evaluate(() => {
-    const date = document.querySelector('#dawn_area > div.active > div.condate')
-      .textContent;
+  const date = await page.evaluate((date_selector) => {
+    const date = document.querySelector(date_selector).textContent;
     return date;
-  });
+  }, date_selector);
 
   if (today === date) {
     const today_selector = '#dawn_area > div.active > div.content > div.img';
@@ -63,23 +62,23 @@ export async function getTodayManna() {
     const manna_selector = '#bbs_view > div.titlebox > div';
     await page.waitForSelector(manna_selector);
 
-    const today_manna = await page.evaluate(() => {
-      const verse = document.querySelector('#bbs_view > div.titlebox > div')
-        .textContent;
-      const contents = Array.from(
+    const today_manna = await page.evaluate((manna_selector) => {
+      const verse = document.querySelector(manna_selector).textContent;
+      let contents = Array.from(
         document.querySelectorAll('#bbs_view > div.contentbox.fr-view > p'),
         (e) => e.textContent,
       );
+      contents = contents.map((e) => e.slice(0, -1));
       const today_manna = {
         verse: verse,
         contents: contents,
       };
       return today_manna;
-    });
+    }, manna_selector);
     browser.close();
     return today_manna;
   } else {
     browser.close();
-    return 0;
+    return false;
   }
 }
