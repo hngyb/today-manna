@@ -1,5 +1,5 @@
-import { TodayManna } from '../models';
-import moment from 'moment';
+const { TodayManna } = require('../models');
+const moment = require('moment');
 
 export async function getMannaByDate(date) {
   const modified_date = moment(new Date(date)).format('YYYY-MM-DD');

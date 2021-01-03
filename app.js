@@ -1,5 +1,9 @@
 const express = require('express');
 const schedule = require('node-schedule');
+const morgan = require('morgan');
+const { logger } = require('./config/winston');
+const helmet = require('helmet');
+const hpp = require('hpp');
 
 const { sequelize } = require('./models');
 const routes = require('./routes');
@@ -9,16 +13,25 @@ const { updateTodayManna } = require('./services/updateTodayManna');
 sequelize
   .sync({ force: false })
   .then(() => {
-    console.log('DB connected!');
+    logger.info('DB connected!');
   })
   .catch((err) => {
-    console.error(err);
+    logger.error(err);
   });
 
 const app = express();
 app.set('port', process.env.port || 9179);
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(morgan('combined'));
+  app.use(helmet());
+  app.use(hpp());
+} else {
+  app.use(morgan('dev'));
+}
+
 app.listen(app.get('port'), () => {
-  console.log('Server running on port:', app.get('port'));
+  logger.info('Server running on port:', app.get('port'));
 });
 app.use('/', routes);
 
@@ -30,11 +43,11 @@ schedule.scheduleJob('1 0 * * 1-6', async () => {
       setTimeout(async () => {
         res = await updateTodayManna();
         if (!res) {
-          console.error('Manna not updated yet!');
+          logger.error('Manna not updated yet!');
         }
       }, 60000);
     }
   } catch (err) {
-    console.error(err);
+    logger.error(err);
   }
 });

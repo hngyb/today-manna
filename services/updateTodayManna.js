@@ -1,5 +1,6 @@
-import { TodayManna } from '../models';
+const { TodayManna } = require('../models');
 const { getTodayManna } = require('./getTodayManna');
+const { logger } = require('../config/winston');
 
 export async function updateTodayManna() {
   try {
@@ -14,6 +15,6 @@ export async function updateTodayManna() {
       return false;
     }
   } catch (err) {
-    console.error(err);
+    logger.error(err);
   }
 }
