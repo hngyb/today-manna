@@ -17,7 +17,7 @@
     "prettier": "^2.2.1"
   },
   "scripts": {
-    "dev": "export env NODE_ENV=development && nodemon --exec babel-node app.js",
+    "dev": "cross-env NODE_ENV=development && nodemon --exec babel-node app.js",
     "start": "cross-env NODE_ENV=production PORT=9179 pm2 start --interpreter babel-node app.js",
     "test": "echo \"Error: no test specofied\" && exit 1"
   },

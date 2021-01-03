@@ -2,7 +2,7 @@ const { TodayManna } = require('../models');
 const { getTodayManna } = require('./getTodayManna');
 const { logger } = require('../config/winston');
 
-export async function updateTodayManna() {
+module.exports = async function updateTodayManna() {
   try {
     const today_manna = await getTodayManna();
     if (today_manna) {
@@ -17,4 +17,4 @@ export async function updateTodayManna() {
   } catch (err) {
     logger.error(err);
   }
-}
+};

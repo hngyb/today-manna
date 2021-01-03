@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const config = require('../config');
 
-export async function getTodayManna() {
+async function getTodayManna() {
   const browser = await puppeteer.launch({});
   const page = await browser.newPage();
   const id = config.jbchId;
@@ -82,3 +82,5 @@ export async function getTodayManna() {
     return false;
   }
 }
+
+module.exports.getTodayManna = getTodayManna;

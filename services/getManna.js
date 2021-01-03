@@ -1,7 +1,7 @@
 const { TodayManna } = require('../models');
 const moment = require('moment');
 
-export async function getMannaByDate(date) {
+async function getMannaByDate(date) {
   const modified_date = moment(new Date(date)).format('YYYY-MM-DD');
   const manna = await TodayManna.findOne({
     attributes: ['date', 'verse', 'contents'],
@@ -15,7 +15,7 @@ export async function getMannaByDate(date) {
   return manna;
 }
 
-export async function getLatestManna() {
+async function getLatestManna() {
   const max_date = await TodayManna.max('date');
   const manna = await TodayManna.findOne({
     attributes: ['date', 'verse', 'contents'],
@@ -28,3 +28,6 @@ export async function getLatestManna() {
   manna.contents = JSON.parse(manna.contents);
   return manna;
 }
+
+module.exports.getMannaByDate = getMannaByDate;
+module.exports.getLatestManna = getLatestManna;
