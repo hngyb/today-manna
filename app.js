@@ -1,10 +1,10 @@
 const express = require('express');
 const schedule = require('node-schedule');
 const morgan = require('morgan');
-const { logger } = require('./config/winston');
 const helmet = require('helmet');
 const hpp = require('hpp');
 
+const { logger } = require('./config/winston');
 const { sequelize } = require('./models');
 const routes = require('./routes');
 const { updateTodayManna } = require('./services/updateTodayManna');
@@ -30,13 +30,30 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev'));
 }
 
-app.listen(app.get('port'), () => {
-  logger.info('Server running on port:', app.get('port'));
-});
 app.use('/', routes);
+
+app.listen(app.get('port'), () => {
+  console.log('Server running on port:', app.get('port'));
+});
 
 // update today manna
 schedule.scheduleJob('1 0 * * 1-6', async () => {
+  try {
+    let res = await updateTodayManna();
+    if (!res) {
+      setTimeout(async () => {
+        res = await updateTodayManna();
+        if (!res) {
+          logger.error('Manna not updated yet!');
+        }
+      }, 60000);
+    }
+  } catch (err) {
+    logger.error(err);
+  }
+});
+
+schedule.scheduleJob('0 5 * * 1-6', async () => {
   try {
     let res = await updateTodayManna();
     if (!res) {

@@ -14,7 +14,6 @@ async function getMannaByDate(date) {
   manna.contents = JSON.parse(manna.contents);
   return manna;
 }
-
 async function getLatestManna() {
   const max_date = await TodayManna.max('date');
   const manna = await TodayManna.findOne({
