@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const schedule = require('node-schedule');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -29,15 +30,15 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   app.use(morgan('dev'));
 }
-
+app.use(passport.initialize());
 app.use('/', routes);
 
 app.listen(app.get('port'), () => {
   console.log('Server running on port:', app.get('port'));
 });
 
-// update today manna (at 00:01 AM)
-schedule.scheduleJob('01 00 * * 1-6', async () => {
+// update today manna (at 00:00:00 AM)
+schedule.scheduleJob('0 0 0 * * 1-6', async () => {
   try {
     let res = await updateTodayManna();
     if (!res) {
